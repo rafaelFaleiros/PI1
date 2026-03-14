@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:15
+    container_name: pi_db_monitoramento
+    environment:
+      POSTGRES_USER: user_univesp
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: pi_monitoramento
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    container_name: pi_backend
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/usr/src/app
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: pi_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - backend
