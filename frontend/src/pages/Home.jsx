@@ -16,7 +16,8 @@ function Home({ mudarPagina }) {
           Novo Requerimento
         </button>
 
-        <button style={styles.secondaryButton}>
+        <button style={styles.secondaryButton}
+        onClick={() => mudarPagina("acompanhar")}>
           Acompanhar Solicitação
         </button>
       </div>

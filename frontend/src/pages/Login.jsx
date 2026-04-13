@@ -17,7 +17,7 @@ function Login({ mudarPagina }) {
 
         <button  
         style={styles.button}
-        onClick={() => mudarPagina("requerimento")}
+        onClick={() => mudarPagina("Home")}
         >
           Entrar com GOV.br
         </button>

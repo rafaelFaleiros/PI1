@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function NovoRequerimento() {
+function NovoRequerimento({ mudarPagina }) {
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ function NovoRequerimento() {
       return;
     }
 
-    alert("Solicitação enviada!");
+    mudarPagina("Sucesso");
   }
 
   return (
