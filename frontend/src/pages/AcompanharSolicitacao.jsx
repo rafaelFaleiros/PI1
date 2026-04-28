@@ -3,20 +3,34 @@ import { useState } from "react";
 function AcompanharSolicitacao({ mudarPagina }) {
   const [cpf, setCpf] = useState("");
 
-  function buscar() {
-    if (!cpf) {
-      alert("Digite o CPF!");
-      return;
-    }
+ // frontend/src/pages/AcompanharSolicitacao.jsx
 
-    if (cpf === "111") {
-      mudarPagina("statusEmAnalise");
-    } else if (cpf === "222") {
-      mudarPagina("statusConcluido");
+async function buscar() {
+  if (!cpf) {
+    alert("Digite o CPF!");
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:3001/api/solicitacoes/buscar/${cpf}`);
+    
+    if (response.ok) {
+      const dados = await response.json();
+      
+      // Lógica de navegação baseada no status real do banco
+      if (dados.status === "Em análise") {
+        mudarPagina("statusEmAnalise");
+      } else if (dados.status === "Concluído") {
+        mudarPagina("statusConcluido");
+      }
     } else {
       mudarPagina("naoEncontrado");
     }
+  } catch (error) {
+    console.error("Erro ao buscar:", error);
+    alert("Erro de conexão com o servidor.");
   }
+}
 
   return (
     <div style={styles.container}>

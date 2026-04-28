@@ -3,6 +3,10 @@ const cors = require('cors');
 const { Sequelize } = require('sequelize');
 const config = require('./config/config.json').development;
 
+// 1. IMPORTAR AS ROTAS (Verifique se os caminhos estão corretos)
+const solicitacaoRoutes = require('./routes/solicitacaoRoutes');
+// const requerenteRoutes = require('./routes/requerenteRoutes'); // Se for usar agora
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -13,6 +17,12 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
   dialect: config.dialect
 });
 
+// 2. REGISTRAR AS ROTAS
+// Agora o Express vai entender que tudo que começa com /api/solicitacoes 
+// deve ser tratado pelo arquivo solicitacaoRoutes.js
+app.use('/api/solicitacoes', solicitacaoRoutes);
+
+// Rota de teste mantida
 app.get('/api/test', async (req, res) => {
   try {
     await sequelize.authenticate();

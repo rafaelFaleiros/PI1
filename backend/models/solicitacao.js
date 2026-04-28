@@ -39,6 +39,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Solicitacao',
+    tableName: 'Solicitacaos', // <--- Use exatamente como apareceu no \dt
+    freezeTableName: true,      // <--- Adicione isso para ele parar de tentar pluralizar sozinho
   });
   return Solicitacao;
 };

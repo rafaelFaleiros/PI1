@@ -10,15 +10,51 @@ function NovoRequerimento({ mudarPagina }) {
   const [motivo, setMotivo] = useState("");
   const [descricao, setDescricao] = useState("");
 
-  function enviar(e) {
+  async function enviar(e) {
     e.preventDefault();
-
+    alert("A função enviar foi chamada!");
+  
+    // 1. Validação básica antes de gastar internet
     if (!nome || !cpf || !email) {
       alert("Preencha os campos obrigatórios!");
       return;
     }
-
-    mudarPagina("Sucesso");
+  
+    // 2. Monta o objeto exatamente como o seu Backend espera
+    const dadosSolicitacao = {
+      nome_solicitante: nome,
+      cpf: cpf,
+      email: email,
+      telefone: telefone,
+      data_ocorrencia: data ? new Date(data).toISOString() : new Date().toISOString(),
+      local_ocorrencia: local,
+      motivo: motivo,
+      descricao_ocorrencia: descricao,
+      status_atual: "Pendente",
+      numero_protocolo: "ITV-" + Date.now(), // Gera um protocolo simples
+    };
+  
+    try {
+      // 3. O FETCH: Chama o seu container do Backend na porta 3001
+      const resposta = await fetch("http://localhost:3001/api/solicitacoes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dadosSolicitacao)
+      });
+  
+      if (resposta.ok) {
+        alert("Sucesso! Sua solicitação foi salva no banco de dados.");
+        mudarPagina("sucesso"); // Vai para a tela de confirmação
+      } else {
+        const erro = await resposta.json();
+        alert("Erro no servidor: " + (erro.error || "Falha ao salvar"));
+      }
+    } catch (error) {
+      console.error("Erro na conexão:", error);
+      alert("O Backend está desligado ou o Docker travou!");
+    }
   }
 
   return (
