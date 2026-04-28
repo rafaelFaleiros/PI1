@@ -3,10 +3,10 @@ const express = require('express');
 const router = express.Router();
 const { Solicitacao } = require('../models'); // Verifique se este caminho está certo!
 
-router.get('/buscar/:cpf', async (req, res) => {
+router.get('/buscar/:id', async (req, res) => {
     try {
       const solicitacao = await Solicitacao.findOne({ 
-        where: { cpf: req.params.cpf } 
+        where: { id_requerente: req.params.id } 
       });
       
       if (solicitacao) {

@@ -23,10 +23,10 @@ function NovoRequerimento({ mudarPagina }) {
     // 2. Monta o objeto exatamente como o seu Backend espera
     const dadosSolicitacao = {
       nome_solicitante: nome,
-      cpf: cpf,
+      id_requerente: cpf,
       email: email,
       telefone: telefone,
-      data_ocorrencia: data ? new Date(data).toISOString() : new Date().toISOString(),
+      data_ocorrencia: data ? new Date(data) : new Date(),
       local_ocorrencia: local,
       motivo: motivo,
       descricao_ocorrencia: descricao,
