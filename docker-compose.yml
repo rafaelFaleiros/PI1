@@ -18,6 +18,7 @@ services:
       - ./backend:/usr/src/app
     depends_on:
       - db
+    command: sh -c "npx sequelize-cli db:migrate && npm start"
 
   frontend:
     build: ./frontend
@@ -29,3 +30,14 @@ services:
       - /usr/src/app/node_modules
     depends_on:
       - backend
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pi_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
