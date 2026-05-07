@@ -28,6 +28,6 @@ Após o terminal mostrar que o banco está pronto e o backend está rodando, ace
 
 🗄️ pgAdmin (Gerenciar o Banco): http://localhost:8080
 
-Usuário: admin@univesp.br
+Usuário: admin@admin.com
 
 Senha: admin
