@@ -1,7 +1,7 @@
 // backend/routes/solicitacaoRoutes.js
 const express = require('express');
 const router = express.Router();
-const { Solicitacao } = require('../models'); // Verifique se este caminho está certo!
+const { Solicitacao } = require('../models');
 
 router.get('/buscar/:id', async (req, res) => {
     try {
@@ -12,7 +12,6 @@ router.get('/buscar/:id', async (req, res) => {
       if (solicitacao) {
         res.json(solicitacao);
       } else {
-        // É aqui que ele está caindo agora porque o CPF não existe no banco
         res.status(404).json({ message: "Solicitação não encontrada" });
       }
     } catch (error) {
@@ -22,14 +21,14 @@ router.get('/buscar/:id', async (req, res) => {
 
 
   router.post('/', async (req, res) => {
-    console.log("Dados recebidos no Back:", req.body); // <--- ADICIONE ISSO
+    console.log("Dados recebidos no Back:", req.body); 
     try {
       const nova = await Solicitacao.create(req.body);
       res.status(201).json(nova);
     } catch (error) {
-      console.error("Erro no Sequelize:", error); // <--- E ISSO
+      console.error("Erro no Sequelize:", error); 
       res.status(400).json({ error: error.message });
     }
   });
 
-  module.exports = router; // NÃO ESQUEÇA DISSO NO FINAL DO ARQUIVO!
+  module.exports = router; 
