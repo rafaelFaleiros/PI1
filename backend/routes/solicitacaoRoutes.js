@@ -3,10 +3,26 @@ const express = require('express');
 const router = express.Router();
 const { Solicitacao } = require('../models');
 
-router.get('/buscar/:id', async (req, res) => {
+router.get('/buscar/usuario/:id', async (req, res) => {
     try {
-      const solicitacao = await Solicitacao.findOne({ 
+      const solicitacao = await Solicitacao.findAll({ 
         where: { id_requerente: req.params.id } 
+      });
+      
+      if (solicitacao) {
+        res.json(solicitacao);
+      } else {
+        res.status(404).json({ message: "Solicitação não encontrada" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  router.get('/buscar/pendente', async (req, res) => {
+    try {
+      const solicitacao = await Solicitacao.findAll({ 
+        where: { status_atual: "Pendente" } 
       });
       
       if (solicitacao) {
