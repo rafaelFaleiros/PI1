@@ -6,9 +6,12 @@ import AcompanharSolicitacao from "./pages/AcompanharSolicitacao";
 import SolicitacaoEnviada from "./pages/SolicitacaoEnviada";
 import StatusSolicitacao from "./pages/StatusSolicitacao";
 import NaoEncontrado from "./pages/NaoEncontrado";
+import DashboardOperador from "./pages/DashboardOperador"; // Importamos a nova tela
 
 function App() {
   const [pagina, setPagina] = useState("login");
+  // Estado para armazenar o status que vem do banco de dados
+  const [statusAtual, setStatusAtual] = useState("");
 
   return (
     <>
@@ -21,29 +24,31 @@ function App() {
       )}
 
       {pagina === "acompanhar" && (
-        <AcompanharSolicitacao mudarPagina={setPagina} />
+        <AcompanharSolicitacao 
+          mudarPagina={setPagina} 
+          setStatusRemoto={setStatusAtual} // Passamos a função para salvar o status buscado
+        />
       )}
 
       {pagina === "sucesso" && (
         <SolicitacaoEnviada mudarPagina={setPagina} />
       )}
 
-      {pagina === "statusEmAnalise" && (
+      {/* Unificamos as telas de status em uma única, usando o dado real do banco */}
+      {pagina === "status" && (
         <StatusSolicitacao
-          status="Em análise"
-          mudarPagina={setPagina}
-        />
-      )}
-
-      {pagina === "statusConcluido" && (
-        <StatusSolicitacao
-          status="Concluído"
+          status={statusAtual}
           mudarPagina={setPagina}
         />
       )}
 
       {pagina === "naoEncontrado" && (
         <NaoEncontrado mudarPagina={setPagina} />
+      )}
+
+      {/* Nova rota para o painel de gestão da prefeitura */}
+      {pagina === "dashboard" && (
+        <DashboardOperador mudarPagina={setPagina} />
       )}
     </>
   );

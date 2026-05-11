@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     hora_ocorrencia: DataTypes.STRING,
     descricao_ocorrencia: DataTypes.TEXT,
     status_atual: DataTypes.STRING,
-    id_requerente: DataTypes.INTEGER
+    id_requerente: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Solicitacao',

@@ -12,8 +12,8 @@ async function buscar() {
   }
 
   try {
-    const response = await fetch(`http://localhost:3001/api/solicitacoes/buscar/usuario/${cpf}`);
-    
+    const response = await fetch(`http://localhost:3001/api/solicitacoes/requerente/${cpf}`);
+        
     if (response.ok) {
       const dados = await response.json();
       
