@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 router.get('/buscar/:protocolo', async (req, res) => {
   try {
     const solicitacao = await Solicitacao.findOne({ 
-      where: { numero_protocolo: req.params.protocolo },
+      where: { id_requerente: req.params.protocolo },
       include: ['requerente']
     });
     if (!solicitacao) return res.status(404).json({ message: "Protocolo não encontrado" });

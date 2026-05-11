@@ -16,8 +16,8 @@ function App() {
   return (
     <>
       {pagina === "login" && <Login mudarPagina={setPagina} />}
-
       {pagina === "home" && <Home mudarPagina={setPagina} />}
+      {pagina === "dashboard" && <DashboardOperador mudarPagina={setPagina} />}
 
       {pagina === "requerimento" && (
         <NovoRequerimento mudarPagina={setPagina} />
@@ -47,9 +47,7 @@ function App() {
       )}
 
       {/* Nova rota para o painel de gestão da prefeitura */}
-      {pagina === "dashboard" && (
-        <DashboardOperador mudarPagina={setPagina} />
-      )}
+
     </>
   );
 }

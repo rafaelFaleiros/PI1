@@ -1,25 +1,29 @@
+// Localização: frontend/src/pages/Login.jsx
+
 function Login({ mudarPagina }) {
   return (
     <div style={styles.container}>
-      
-      {/* TOPO */}
-      <div style={styles.header}>
-        Sistema Digital de Requerimento
-      </div>
+      <div style={styles.header}>Sistema Digital de Requerimento</div>
 
-      {/* CARD CENTRAL */}
       <div style={styles.card}>
-        <h2 style={styles.cardTitle}>Autenticação GOV.br</h2>
-
-        <p style={styles.text}>
-          Para acessar o sistema é necessário realizar a autenticação segura através da conta gov.com.br.
-        </p>
-
+        <h2 style={styles.cardTitle}>Acesso ao Sistema</h2>
+        
+        {/* BOTÃO PARA O CIDADÃO */}
         <button  
-        style={styles.button}
-        onClick={() => mudarPagina("home")}
+          style={styles.button}
+          onClick={() => mudarPagina("home")}
         >
-          Entrar com GOV.br
+          Entrar como Cidadão (GOV.br)
+        </button>
+
+        <div style={{ margin: "15px 0", color: "#666" }}>— ou —</div>
+
+        {/* BOTÃO PARA O OPERADOR DA PREFEITURA */}
+        <button  
+          style={{ ...styles.button, backgroundColor: "#4b5563" }}
+          onClick={() => mudarPagina("dashboard")}
+        >
+          Painel Administrativo (Operador)
         </button>
       </div>
     </div>
