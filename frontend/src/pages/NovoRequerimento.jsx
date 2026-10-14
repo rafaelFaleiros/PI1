@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-function NovoRequerimento({ mudarPagina }) {
+function NovoRequerimento({
+  mudarPagina,
+  altoContraste,
+  alternarContraste,
+}) {
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
   const [email, setEmail] = useState("");
@@ -10,17 +14,36 @@ function NovoRequerimento({ mudarPagina }) {
   const [motivo, setMotivo] = useState("");
   const [descricao, setDescricao] = useState("");
 
+  const cores = altoContraste
+    ? {
+        fundo: "#000000",
+        cartao: "#000000",
+        texto: "#FFFFFF",
+        destaque: "#FFFF00",
+        textoDestaque: "#000000",
+        campo: "#000000",
+        borda: "#FFFF00",
+      }
+    : {
+        fundo: "#F5F7FA",
+        cartao: "#FFFFFF",
+        texto: "#374151",
+        destaque: "#0F4C5C",
+        textoDestaque: "#FFFFFF",
+        campo: "#FFFFFF",
+        borda: "#9CA3AF",
+      };
+
   async function enviar(e) {
     e.preventDefault();
-    alert("A função enviar foi chamada!");
-  
-    // 1. Validação básica antes de gastar internet
+
+    // Validação básica antes de enviar os dados
     if (!nome || !cpf || !email) {
       alert("Preencha os campos obrigatórios!");
       return;
     }
-  
-    // 2. Monta o objeto exatamente como o seu Backend espera
+
+    // Monta o objeto exatamente como o Backend espera
     const dadosSolicitacao = {
       nome_solicitante: nome,
       id_requerente: cpf,
@@ -31,25 +54,31 @@ function NovoRequerimento({ mudarPagina }) {
       motivo: motivo,
       descricao_ocorrencia: descricao,
       status_atual: "Pendente",
-      numero_protocolo: "ITV-" + Date.now(), // Gera um protocolo simples
+      numero_protocolo: "ITV-" + Date.now(),
     };
-  
+
     try {
-      // 3. O FETCH: Chama o seu container do Backend na porta 3001
-      const resposta = await fetch("http://localhost:3001/api/solicitacoes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dadosSolicitacao)
-      });
-  
+      // Chama o Backend na porta 3001
+      const resposta = await fetch(
+        "http://localhost:3001/api/solicitacoes",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dadosSolicitacao),
+        }
+      );
+
       if (resposta.ok) {
         alert("Sucesso! Sua solicitação foi salva no banco de dados.");
-        mudarPagina("sucesso"); // Vai para a tela de confirmação
+        mudarPagina("sucesso");
       } else {
         const erro = await resposta.json();
-        alert("Erro no servidor: " + (erro.error || "Falha ao salvar"));
+        alert(
+          "Erro no servidor: " +
+            (erro.error || "Falha ao salvar")
+        );
       }
     } catch (error) {
       console.error("Erro na conexão:", error);
@@ -58,49 +87,374 @@ function NovoRequerimento({ mudarPagina }) {
   }
 
   return (
-    <div style={styles.container}>
-      
+    <div
+      style={{
+        ...styles.container,
+        backgroundColor: cores.fundo,
+      }}
+    >
       {/* TOPO */}
-      <div style={styles.header}>
-        Sistema Digital de Requerimentos
-      </div>
+      <header
+        style={{
+          ...styles.header,
+          backgroundColor: altoContraste ? "#000000" : "#0F4C5C",
+          borderBottom: altoContraste ? "2px solid #FFFF00" : "none",
+        }}
+      >
+        <h1 style={styles.headerTitle}>
+          Sistema Digital de Requerimento
+        </h1>
 
-      {/* CARD */}
-      <div style={styles.card}>
-        <h2>Novo Requerimento</h2>
-        <p style={{ fontSize: "12px" }}>
-          Campos marcados com (*) são obrigatórios.
-        </p>
+        <button
+          type="button"
+          onClick={alternarContraste}
+          aria-pressed={altoContraste}
+          style={{
+            ...styles.contrastButton,
+            backgroundColor: altoContraste ? "#FFFF00" : "#FFFFFF",
+            color: altoContraste ? "#000000" : "#0F4C5C",
+            border: altoContraste
+              ? "2px solid #FFFF00"
+              : "2px solid #FFFFFF",
+          }}
+        >
+          {altoContraste
+            ? "Desativar alto contraste"
+            : "Ativar alto contraste"}
+        </button>
+      </header>
 
-        <form onSubmit={enviar}>
+      {/* CONTEÚDO PRINCIPAL */}
+      <main style={styles.main}>
+        <section
+          style={{
+            ...styles.card,
+            backgroundColor: cores.cartao,
+            border: altoContraste ? "2px solid #FFFF00" : "none",
+          }}
+          aria-labelledby="titulo-requerimento"
+        >
+          <h2
+            id="titulo-requerimento"
+            style={{
+              ...styles.cardTitle,
+              color: altoContraste ? cores.destaque : "#1F2937",
+            }}
+          >
+            Novo Requerimento
+          </h2>
 
-          <input placeholder="Nome do solicitante *" style={styles.input} onChange={(e) => setNome(e.target.value)} />
+          <p
+            id="orientacao-formulario"
+            style={{
+              ...styles.instructions,
+              color: cores.texto,
+            }}
+          >
+            Os campos marcados com (*) são obrigatórios.
+          </p>
 
-          <input placeholder="CPF *" style={styles.input} onChange={(e) => setCpf(e.target.value)} />
+          <form onSubmit={enviar} noValidate>
+            {/* NOME */}
+            <div style={styles.fieldGroup}>
+              <label
+                htmlFor="nome"
+                style={{
+                  ...styles.label,
+                  color: cores.texto,
+                }}
+              >
+                Nome do solicitante *
+              </label>
 
-          <input placeholder="Email *" style={styles.input} onChange={(e) => setEmail(e.target.value)} />
+              <input
+                id="nome"
+                name="nome"
+                type="text"
+                style={{
+                  ...styles.input,
+                  color: cores.texto,
+                  backgroundColor: cores.campo,
+                  borderColor: cores.borda,
+                }}
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                required
+                aria-required="true"
+              />
+            </div>
 
-          <input placeholder="Telefone *" style={styles.input} onChange={(e) => setTelefone(e.target.value)} />
+            {/* CPF */}
+            <div style={styles.fieldGroup}>
+              <label
+                htmlFor="cpf"
+                style={{
+                  ...styles.label,
+                  color: cores.texto,
+                }}
+              >
+                CPF *
+              </label>
 
-          <input placeholder="Data do ocorrido *" style={styles.input} onChange={(e) => setData(e.target.value)} />
+              <input
+                id="cpf"
+                name="cpf"
+                type="text"
+                inputMode="numeric"
+                maxLength={14}
+                style={{
+                  ...styles.input,
+                  color: cores.texto,
+                  backgroundColor: cores.campo,
+                  borderColor: cores.borda,
+                }}
+                value={cpf}
+                onChange={(e) => setCpf(e.target.value)}
+                required
+                aria-required="true"
+              />
+            </div>
 
-          <input placeholder="Local da ocorrência *" style={styles.input} onChange={(e) => setLocal(e.target.value)} />
+            {/* EMAIL */}
+            <div style={styles.fieldGroup}>
+              <label
+                htmlFor="email"
+                style={{
+                  ...styles.label,
+                  color: cores.texto,
+                }}
+              >
+                E-mail *
+              </label>
 
-          <input placeholder="Motivo da solicitação *" style={styles.input} onChange={(e) => setMotivo(e.target.value)} />
+              <input
+                id="email"
+                name="email"
+                type="email"
+                style={{
+                  ...styles.input,
+                  color: cores.texto,
+                  backgroundColor: cores.campo,
+                  borderColor: cores.borda,
+                }}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                aria-required="true"
+              />
+            </div>
 
-          <textarea placeholder="Descrição da solicitação *" style={styles.textarea} onChange={(e) => setDescricao(e.target.value)} />
+            {/* TELEFONE */}
+            <div style={styles.fieldGroup}>
+              <label
+                htmlFor="telefone"
+                style={{
+                  ...styles.label,
+                  color: cores.texto,
+                }}
+              >
+                Telefone *
+              </label>
 
-          <input type="file" style={styles.input} />
+              <input
+                id="telefone"
+                name="telefone"
+                type="tel"
+                inputMode="tel"
+                style={{
+                  ...styles.input,
+                  color: cores.texto,
+                  backgroundColor: cores.campo,
+                  borderColor: cores.borda,
+                }}
+                value={telefone}
+                onChange={(e) => setTelefone(e.target.value)}
+                required
+                aria-required="true"
+              />
+            </div>
 
-          <div style={styles.checkboxContainer}>
-            <input type="checkbox" />
-            <span> Declaro que as informações fornecidas são verdadeiras.</span>
-          </div>
+            {/* DATA */}
+            <div style={styles.fieldGroup}>
+              <label
+                htmlFor="data"
+                style={{
+                  ...styles.label,
+                  color: cores.texto,
+                }}
+              >
+                Data do ocorrido *
+              </label>
 
-          <button style={styles.button}>Enviar solicitação</button>
+              <input
+                id="data"
+                name="data"
+                type="date"
+                style={{
+                  ...styles.input,
+                  color: cores.texto,
+                  backgroundColor: cores.campo,
+                  borderColor: cores.borda,
+                  colorScheme: altoContraste ? "dark" : "light",
+                }}
+                value={data}
+                onChange={(e) => setData(e.target.value)}
+                required
+                aria-required="true"
+              />
+            </div>
 
-        </form>
-      </div>
+            {/* LOCAL */}
+            <div style={styles.fieldGroup}>
+              <label
+                htmlFor="local"
+                style={{
+                  ...styles.label,
+                  color: cores.texto,
+                }}
+              >
+                Local da ocorrência *
+              </label>
+
+              <input
+                id="local"
+                name="local"
+                type="text"
+                style={{
+                  ...styles.input,
+                  color: cores.texto,
+                  backgroundColor: cores.campo,
+                  borderColor: cores.borda,
+                }}
+                value={local}
+                onChange={(e) => setLocal(e.target.value)}
+                required
+                aria-required="true"
+              />
+            </div>
+
+            {/* MOTIVO */}
+            <div style={styles.fieldGroup}>
+              <label
+                htmlFor="motivo"
+                style={{
+                  ...styles.label,
+                  color: cores.texto,
+                }}
+              >
+                Motivo da solicitação *
+              </label>
+
+              <input
+                id="motivo"
+                name="motivo"
+                type="text"
+                style={{
+                  ...styles.input,
+                  color: cores.texto,
+                  backgroundColor: cores.campo,
+                  borderColor: cores.borda,
+                }}
+                value={motivo}
+                onChange={(e) => setMotivo(e.target.value)}
+                required
+                aria-required="true"
+              />
+            </div>
+
+            {/* DESCRIÇÃO */}
+            <div style={styles.fieldGroup}>
+              <label
+                htmlFor="descricao"
+                style={{
+                  ...styles.label,
+                  color: cores.texto,
+                }}
+              >
+                Descrição da solicitação *
+              </label>
+
+              <textarea
+                id="descricao"
+                name="descricao"
+                style={{
+                  ...styles.textarea,
+                  color: cores.texto,
+                  backgroundColor: cores.campo,
+                  borderColor: cores.borda,
+                }}
+                value={descricao}
+                onChange={(e) => setDescricao(e.target.value)}
+                required
+                aria-required="true"
+              />
+            </div>
+
+            {/* ANEXO */}
+            <div style={styles.fieldGroup}>
+              <label
+                htmlFor="arquivo"
+                style={{
+                  ...styles.label,
+                  color: cores.texto,
+                }}
+              >
+                Anexo
+              </label>
+
+              <input
+                id="arquivo"
+                name="arquivo"
+                type="file"
+                style={{
+                  ...styles.fileInput,
+                  color: cores.texto,
+                  backgroundColor: cores.campo,
+                  borderColor: cores.borda,
+                }}
+              />
+            </div>
+
+            {/* DECLARAÇÃO */}
+            <div style={styles.checkboxContainer}>
+              <input
+                id="declaracao"
+                name="declaracao"
+                type="checkbox"
+                style={{
+                  ...styles.checkbox,
+                  accentColor: altoContraste ? "#FFFF00" : "#0F4C5C",
+                }}
+                required
+                aria-required="true"
+              />
+
+              <label
+                htmlFor="declaracao"
+                style={{
+                  ...styles.checkboxLabel,
+                  color: cores.texto,
+                }}
+              >
+                Declaro que as informações fornecidas são verdadeiras.
+              </label>
+            </div>
+
+            {/* BOTÃO */}
+            <button
+              type="submit"
+              style={{
+                ...styles.button,
+                backgroundColor: cores.destaque,
+                color: cores.textoDestaque,
+                borderColor: cores.destaque,
+              }}
+            >
+              Enviar solicitação
+            </button>
+          </form>
+        </section>
+      </main>
     </div>
   );
 }
@@ -108,64 +462,142 @@ function NovoRequerimento({ mudarPagina }) {
 const styles = {
   container: {
     minHeight: "100vh",
-    backgroundColor: "#dcdcdc",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
   },
 
   header: {
     width: "100%",
-    backgroundColor: "#1e3a8a",
-    color: "#fff",
-    padding: "15px",
+    padding: "18px 20px",
     textAlign: "center",
-    fontWeight: "bold",
+    boxSizing: "border-box",
+  },
+
+  headerTitle: {
+    margin: 0,
+    fontSize: "22px",
+    fontWeight: "700",
+    color: "#FFFFFF",
+  },
+
+  contrastButton: {
+    marginTop: "14px",
+    minHeight: "44px",
+    padding: "10px 16px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontSize: "15px",
+    fontWeight: "700",
+  },
+
+  main: {
+    flex: 1,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    padding: "40px 20px",
+    boxSizing: "border-box",
   },
 
   card: {
-    marginTop: "40px",
-    backgroundColor: "#fff",
-    padding: "30px",
+    padding: "32px",
     borderRadius: "10px",
     width: "100%",
-    maxWidth: "400px",
-    boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+    maxWidth: "520px",
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.15)",
+    boxSizing: "border-box",
+  },
+
+  cardTitle: {
+    marginTop: 0,
+    marginBottom: "12px",
+    fontSize: "24px",
+    textAlign: "center",
+  },
+
+  instructions: {
+    marginTop: 0,
+    marginBottom: "28px",
+    fontSize: "15px",
+    lineHeight: "1.5",
+    textAlign: "center",
+  },
+
+  fieldGroup: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: "18px",
+  },
+
+  label: {
+    marginBottom: "7px",
+    fontSize: "16px",
+    fontWeight: "600",
   },
 
   input: {
     width: "100%",
-    padding: "10px",
-    marginTop: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-    boxSizing: "border-box"
+    minHeight: "48px",
+    padding: "12px",
+    borderRadius: "6px",
+    border: "2px solid",
+    boxSizing: "border-box",
+    fontSize: "16px",
   },
 
   textarea: {
     width: "100%",
+    minHeight: "120px",
+    padding: "12px",
+    borderRadius: "6px",
+    border: "2px solid",
+    boxSizing: "border-box",
+    fontSize: "16px",
+    lineHeight: "1.5",
+    resize: "vertical",
+  },
+
+  fileInput: {
+    width: "100%",
+    minHeight: "48px",
     padding: "10px",
-    marginTop: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-    height: "100px",
-    boxSizing: "border-box"
+    borderRadius: "6px",
+    border: "2px solid",
+    boxSizing: "border-box",
+    fontSize: "15px",
   },
 
   checkboxContainer: {
-    marginTop: "10px",
-    fontSize: "12px",
+    display: "flex",
+    alignItems: "flex-start",
+    gap: "10px",
+    marginTop: "8px",
+    marginBottom: "24px",
+  },
+
+  checkbox: {
+    width: "20px",
+    height: "20px",
+    margin: 0,
+    flexShrink: 0,
+    cursor: "pointer",
+  },
+
+  checkboxLabel: {
+    fontSize: "15px",
+    lineHeight: "1.5",
+    cursor: "pointer",
   },
 
   button: {
     width: "100%",
-    marginTop: "20px",
-    padding: "12px",
-    backgroundColor: "#2d5be3",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
+    minHeight: "48px",
+    padding: "12px 16px",
+    border: "2px solid",
+    borderRadius: "6px",
     cursor: "pointer",
+    fontSize: "16px",
+    fontWeight: "700",
   },
 };
 

@@ -1,106 +1,298 @@
 import { useState } from "react";
 
-function AcompanharSolicitacao({ mudarPagina }) {
+function AcompanharSolicitacao({
+  mudarPagina,
+  altoContraste,
+  alternarContraste,
+}) {
   const [cpf, setCpf] = useState("");
 
- // frontend/src/pages/AcompanharSolicitacao.jsx
-
-async function buscar() {
-  if (!cpf) {
-    alert("Digite o CPF!");
-    return;
-  }
-
-  try {
-    const response = await fetch(`http://localhost:3001/api/solicitacoes/buscar/${cpf}`);
-    
-    if (response.ok) {
-      const dados = await response.json();
-      
-      // Lógica de navegação baseada no status real do banco
-      if (dados.status === "Em análise") {
-        mudarPagina("statusEmAnalise");
-      } else if (dados.status === "Concluído") {
-        mudarPagina("statusConcluido");
+  const cores = altoContraste
+    ? {
+        fundo: "#000000",
+        cartao: "#000000",
+        texto: "#FFFFFF",
+        destaque: "#FFFF00",
+        textoDestaque: "#000000",
+        borda: "#FFFF00",
+        ajuda: "#FFFFFF",
       }
-    } else {
-      mudarPagina("naoEncontrado");
+    : {
+        fundo: "#F4F7F7",
+        cartao: "#FFFFFF",
+        texto: "#1F2933",
+        destaque: "#006B6B",
+        textoDestaque: "#FFFFFF",
+        borda: "#7B9293",
+        ajuda: "#435556",
+      };
+
+  async function buscar() {
+    if (!cpf) {
+      alert("Digite o CPF!");
+      return;
     }
-  } catch (error) {
-    console.error("Erro ao buscar:", error);
-    alert("Erro de conexão com o servidor.");
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/solicitacoes/buscar/" + cpf
+      );
+
+      if (response.ok) {
+        const dados = await response.json();
+
+        if (dados.status === "Em análise") {
+          mudarPagina("statusEmAnalise");
+        } else if (dados.status === "Concluído") {
+          mudarPagina("statusConcluido");
+        }
+      } else {
+        mudarPagina("naoEncontrado");
+      }
+    } catch (error) {
+      console.error("Erro ao buscar:", error);
+      alert("Erro de conexão com o servidor.");
+    }
   }
-}
 
   return (
-    <div style={styles.container}>
-      
-      <div style={styles.header}>
-        Sistema Digital de Requerimento
-      </div>
+    <div
+      style={{
+        ...styles.container,
+        backgroundColor: cores.fundo,
+      }}
+    >
+      <header
+        style={{
+          ...styles.header,
+          backgroundColor: altoContraste ? "#000000" : "#004F4F",
+          borderBottom: altoContraste
+            ? "2px solid #FFFF00"
+            : "none",
+        }}
+      >
+        <div style={styles.headerContent}>
+          <h1 style={styles.headerTitle}>
+            Sistema Digital de Requerimento
+          </h1>
 
-      <div style={styles.card}>
-        <h2>Acompanhar Solicitação</h2>
+          <button
+            type="button"
+            onClick={alternarContraste}
+            aria-pressed={altoContraste}
+            style={{
+              ...styles.contrastButton,
+              backgroundColor: altoContraste
+                ? "#FFFF00"
+                : "#FFFFFF",
+              color: altoContraste
+                ? "#000000"
+                : "#004F4F",
+              border: "2px solid #FFFF00",
+            }}
+          >
+            {altoContraste
+              ? "Desativar alto contraste"
+              : "Ativar alto contraste"}
+          </button>
+        </div>
+      </header>
 
-        <input
-          placeholder="Digite seu CPF"
-          style={styles.input}
-          onChange={(e) => setCpf(e.target.value)}
-        />
+      <main style={styles.main}>
+        <section
+          style={{
+            ...styles.card,
+            backgroundColor: cores.cartao,
+            border: altoContraste
+              ? "2px solid #FFFF00"
+              : "1px solid #AABFC0",
+          }}
+          aria-labelledby="titulo-pagina"
+        >
+          <h2
+            id="titulo-pagina"
+            style={{
+              ...styles.title,
+              color: altoContraste ? cores.destaque : "#004F4F",
+            }}
+          >
+            Acompanhar Solicitação
+          </h2>
 
-        <button style={styles.button} onClick={buscar}>
-          Buscar
-        </button>
-      </div>
+          <p
+            style={{
+              ...styles.description,
+              color: cores.texto,
+            }}
+          >
+            Informe seu CPF para consultar o andamento da sua solicitação.
+          </p>
+
+          <div style={styles.formGroup}>
+            <label
+              htmlFor="cpf"
+              style={{
+                ...styles.label,
+                color: cores.texto,
+              }}
+            >
+              CPF
+            </label>
+
+            <input
+              id="cpf"
+              name="cpf"
+              type="text"
+              inputMode="numeric"
+              placeholder="Digite seu CPF"
+              value={cpf}
+              onChange={(e) => setCpf(e.target.value)}
+              style={{
+                ...styles.input,
+                backgroundColor: cores.campo || cores.cartao,
+                color: cores.texto,
+                borderColor: cores.borda,
+              }}
+              aria-describedby="cpf-ajuda"
+            />
+
+            <span
+              id="cpf-ajuda"
+              style={{
+                ...styles.helpText,
+                color: cores.ajuda,
+              }}
+            >
+              Digite somente os números do CPF.
+            </span>
+          </div>
+
+          <button
+            type="button"
+            style={{
+              ...styles.button,
+              backgroundColor: cores.destaque,
+              color: cores.textoDestaque,
+              border: altoContraste
+                ? "2px solid #FFFF00"
+                : "none",
+            }}
+            onClick={buscar}
+            aria-label="Buscar solicitação pelo CPF"
+          >
+            Buscar solicitação
+          </button>
+        </section>
+      </main>
     </div>
   );
 }
 
 const styles = {
   container: {
-    height: "100vh",
-    backgroundColor: "#dcdcdc",
+    minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    fontFamily: "Arial, sans-serif",
   },
 
   header: {
     width: "100%",
-    backgroundColor: "#1e3a8a",
-    color: "#fff",
-    padding: "15px",
+    color: "#FFFFFF",
+    boxSizing: "border-box",
+  },
+
+  headerContent: {
+    maxWidth: "1100px",
+    margin: "0 auto",
+    padding: "18px 20px",
     textAlign: "center",
-    fontWeight: "bold",
+  },
+
+  headerTitle: {
+    margin: 0,
+    fontSize: "20px",
+    fontWeight: "700",
+    color: "#FFFFFF",
+  },
+
+  contrastButton: {
+    marginTop: "14px",
+    minHeight: "44px",
+    padding: "10px 16px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontSize: "15px",
+    fontWeight: "700",
+  },
+
+  main: {
+    flex: 1,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    padding: "60px 20px",
+    boxSizing: "border-box",
   },
 
   card: {
-    marginTop: "120px",
-    backgroundColor: "#fff",
-    padding: "30px",
-    borderRadius: "10px",
     width: "100%",
-    maxWidth: "300px",
+    maxWidth: "480px",
+    borderRadius: "12px",
+    padding: "32px",
+    boxSizing: "border-box",
+    boxShadow: "0 4px 14px rgba(0, 0, 0, 0.08)",
+  },
+
+  title: {
+    margin: "0 0 12px 0",
+    fontSize: "28px",
+    lineHeight: "1.3",
     textAlign: "center",
-    boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+  },
+
+  description: {
+    margin: "0 0 28px 0",
+    fontSize: "16px",
+    lineHeight: "1.5",
+    textAlign: "center",
+  },
+
+  formGroup: {
+    display: "flex",
+    flexDirection: "column",
+  },
+
+  label: {
+    marginBottom: "8px",
+    fontSize: "16px",
+    fontWeight: "700",
   },
 
   input: {
     width: "100%",
-    padding: "10px",
-    marginTop: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
+    minHeight: "48px",
+    padding: "12px",
+    boxSizing: "border-box",
+    border: "2px solid",
+    borderRadius: "6px",
+    fontSize: "16px",
+  },
+
+  helpText: {
+    marginTop: "7px",
+    fontSize: "14px",
+    lineHeight: "1.4",
   },
 
   button: {
     width: "100%",
-    marginTop: "20px",
-    padding: "12px",
-    backgroundColor: "#2d5be3",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
+    minHeight: "50px",
+    marginTop: "24px",
+    padding: "12px 20px",
+    borderRadius: "6px",
+    fontSize: "16px",
+    fontWeight: "700",
     cursor: "pointer",
   },
 };

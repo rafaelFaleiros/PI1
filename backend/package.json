@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "npx sequelize-cli db:migrate && node index.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.20.0",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.8"
+    "sequelize": "^6.37.8",
+    "sequelize-cli": "^6.6.0"
   }
 }

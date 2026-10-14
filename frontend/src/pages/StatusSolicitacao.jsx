@@ -1,65 +1,200 @@
-function StatusSolicitacao({ status, mudarPagina }) {
+function StatusSolicitacao({
+  status,
+  mudarPagina,
+  altoContraste,
+  alternarContraste,
+}) {
+  const cores = altoContraste
+    ? {
+        fundo: "#000000",
+        cartao: "#000000",
+        texto: "#FFFFFF",
+        destaque: "#FFFF00",
+        textoDestaque: "#000000",
+        borda: "#FFFF00",
+        caixaStatus: "#000000",
+      }
+    : {
+        fundo: "#dcdcdc",
+        cartao: "#FFFFFF",
+        texto: "#1F2933",
+        destaque: "#2d5be3",
+        textoDestaque: "#FFFFFF",
+        borda: "#2d5be3",
+        caixaStatus: "#e5e7eb",
+      };
+
   return (
-    <div style={styles.container}>
-      
-      <div style={styles.header}>
-        Sistema Digital de Requerimento
-      </div>
+    <div
+      style={{
+        ...styles.container,
+        backgroundColor: cores.fundo,
+      }}
+    >
+      <header
+        style={{
+          ...styles.header,
+          backgroundColor: altoContraste ? "#000000" : "#1e3a8a",
+          borderBottom: altoContraste
+            ? "2px solid #FFFF00"
+            : "none",
+        }}
+      >
+        <h1 style={styles.headerTitle}>
+          Sistema Digital de Requerimento
+        </h1>
 
-      <div style={styles.card}>
-        <h2>Status da Solicitação</h2>
-
-        <p style={styles.label}>Situação:</p>
-
-        <div style={styles.statusBox}>
-          {status}
-        </div>
-
-        <button 
-          style={styles.primaryButton}
-          onClick={() => mudarPagina("home")}
+        <button
+          type="button"
+          onClick={alternarContraste}
+          aria-pressed={altoContraste}
+          style={{
+            ...styles.contrastButton,
+            backgroundColor: altoContraste ? "#FFFF00" : "#FFFFFF",
+            color: altoContraste ? "#000000" : "#1e3a8a",
+            border: "2px solid #FFFF00",
+          }}
         >
-          Voltar ao início
+          {altoContraste
+            ? "Desativar alto contraste"
+            : "Ativar alto contraste"}
         </button>
+      </header>
 
-        <button 
-          style={styles.secondaryButton}
-          onClick={() => mudarPagina("acompanhar")}
+      <main style={styles.main}>
+        <section
+          style={{
+            ...styles.card,
+            backgroundColor: cores.cartao,
+            border: altoContraste
+              ? "2px solid #FFFF00"
+              : "none",
+          }}
+          aria-labelledby="titulo-status"
         >
-          Nova busca
-        </button>
-      </div>
+          <h2
+            id="titulo-status"
+            style={{
+              ...styles.title,
+              color: altoContraste ? cores.destaque : "#1e3a8a",
+            }}
+          >
+            Status da Solicitação
+          </h2>
+
+          <p
+            style={{
+              ...styles.label,
+              color: cores.texto,
+            }}
+          >
+            Situação:
+          </p>
+
+          <div
+            style={{
+              ...styles.statusBox,
+              backgroundColor: cores.caixaStatus,
+              color: cores.texto,
+              border: altoContraste
+                ? "2px solid #FFFF00"
+                : "none",
+            }}
+            role="status"
+            aria-live="polite"
+          >
+            {status}
+          </div>
+
+          <button
+            type="button"
+            style={{
+              ...styles.primaryButton,
+              backgroundColor: cores.destaque,
+              color: cores.textoDestaque,
+              border: altoContraste
+                ? "2px solid #FFFF00"
+                : "none",
+            }}
+            onClick={() => mudarPagina("home")}
+          >
+            Voltar ao início
+          </button>
+
+          <button
+            type="button"
+            style={{
+              ...styles.secondaryButton,
+              backgroundColor: altoContraste ? "#000000" : "#FFFFFF",
+              color: altoContraste ? "#FFFF00" : "#2d5be3",
+              border: `2px solid ${cores.borda}`,
+            }}
+            onClick={() => mudarPagina("acompanhar")}
+          >
+            Nova busca
+          </button>
+        </section>
+      </main>
     </div>
   );
 }
 
 const styles = {
   container: {
-    height: "100vh",
-    backgroundColor: "#dcdcdc",
+    minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    fontFamily: "Arial, sans-serif",
   },
 
   header: {
     width: "100%",
-    backgroundColor: "#1e3a8a",
-    color: "#fff",
-    padding: "15px",
+    color: "#FFFFFF",
+    padding: "18px 20px",
+    boxSizing: "border-box",
     textAlign: "center",
-    fontWeight: "bold",
+  },
+
+  headerTitle: {
+    margin: 0,
+    fontSize: "20px",
+    fontWeight: "700",
+    color: "#FFFFFF",
+  },
+
+  contrastButton: {
+    marginTop: "14px",
+    minHeight: "44px",
+    padding: "10px 16px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontSize: "15px",
+    fontWeight: "700",
+  },
+
+  main: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    padding: "60px 20px",
+    boxSizing: "border-box",
   },
 
   card: {
-    marginTop: "120px",
-    backgroundColor: "#fff",
+    marginTop: "40px",
     padding: "30px",
     borderRadius: "10px",
     width: "100%",
     maxWidth: "350px",
     textAlign: "center",
     boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+    boxSizing: "border-box",
+  },
+
+  title: {
+    marginTop: 0,
+    fontSize: "24px",
   },
 
   label: {
@@ -70,7 +205,6 @@ const styles = {
 
   statusBox: {
     padding: "15px",
-    backgroundColor: "#e5e7eb",
     borderRadius: "5px",
     fontWeight: "bold",
     marginBottom: "20px",
@@ -78,24 +212,24 @@ const styles = {
 
   primaryButton: {
     width: "100%",
+    minHeight: "48px",
     padding: "12px",
     marginTop: "10px",
-    backgroundColor: "#2d5be3",
-    color: "#fff",
-    border: "none",
     borderRadius: "5px",
     cursor: "pointer",
+    fontSize: "15px",
+    fontWeight: "700",
   },
 
   secondaryButton: {
     width: "100%",
+    minHeight: "48px",
     padding: "12px",
     marginTop: "10px",
-    backgroundColor: "#fff",
-    color: "#2d5be3",
-    border: "2px solid #2d5be3",
     borderRadius: "5px",
     cursor: "pointer",
+    fontSize: "15px",
+    fontWeight: "700",
   },
 };
 
