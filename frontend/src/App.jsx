@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import Login from "./pages/Login";
 import NovoRequerimento from "./pages/NovoRequerimento";
@@ -6,49 +7,89 @@ import AcompanharSolicitacao from "./pages/AcompanharSolicitacao";
 import SolicitacaoEnviada from "./pages/SolicitacaoEnviada";
 import StatusSolicitacao from "./pages/StatusSolicitacao";
 import NaoEncontrado from "./pages/NaoEncontrado";
-import DashboardOperador from "./pages/DashboardOperador"; // Importamos a nova tela
+import DashboardOperador from "./pages/DashboardOperador";
 
 function App() {
   const [pagina, setPagina] = useState("login");
-  // Estado para armazenar o status que vem do banco de dados
   const [statusAtual, setStatusAtual] = useState("");
 
+  const [altoContraste, setAltoContraste] = useState(() => {
+    return localStorage.getItem("altoContraste") === "true";
+  });
+
+  function alternarContraste() {
+    setAltoContraste((atual) => {
+      const novoValor = !atual;
+      localStorage.setItem("altoContraste", String(novoValor));
+      return novoValor;
+    });
+  }
+
+  const propriedadesAcessibilidade = {
+    altoContraste,
+    alternarContraste,
+  };
+
   return (
-    <>
-      {pagina === "login" && <Login mudarPagina={setPagina} />}
-      {pagina === "home" && <Home mudarPagina={setPagina} />}
-      {pagina === "dashboard" && <DashboardOperador mudarPagina={setPagina} />}
+    <div className={altoContraste ? "alto-contraste" : ""}>
+      {pagina === "login" && (
+        <Login
+          mudarPagina={setPagina}
+          {...propriedadesAcessibilidade}
+        />
+      )}
+
+      {pagina === "home" && (
+        <Home
+          mudarPagina={setPagina}
+          {...propriedadesAcessibilidade}
+        />
+      )}
+
+      {pagina === "dashboard" && (
+        <DashboardOperador
+          mudarPagina={setPagina}
+          {...propriedadesAcessibilidade}
+        />
+      )}
 
       {pagina === "requerimento" && (
-        <NovoRequerimento mudarPagina={setPagina} />
+        <NovoRequerimento
+          mudarPagina={setPagina}
+          {...propriedadesAcessibilidade}
+        />
       )}
 
       {pagina === "acompanhar" && (
-        <AcompanharSolicitacao 
-          mudarPagina={setPagina} 
-          setStatusRemoto={setStatusAtual} // Passamos a função para salvar o status buscado
+        <AcompanharSolicitacao
+          mudarPagina={setPagina}
+          setStatusRemoto={setStatusAtual}
+          {...propriedadesAcessibilidade}
         />
       )}
 
       {pagina === "sucesso" && (
-        <SolicitacaoEnviada mudarPagina={setPagina} />
+        <SolicitacaoEnviada
+          mudarPagina={setPagina}
+          {...propriedadesAcessibilidade}
+        />
       )}
 
-      {/* Unificamos as telas de status em uma única, usando o dado real do banco */}
       {pagina === "status" && (
         <StatusSolicitacao
           status={statusAtual}
           mudarPagina={setPagina}
+          {...propriedadesAcessibilidade}
         />
       )}
 
       {pagina === "naoEncontrado" && (
-        <NaoEncontrado mudarPagina={setPagina} />
+        <NaoEncontrado
+          mudarPagina={setPagina}
+          {...propriedadesAcessibilidade}
+        />
       )}
-
-      {/* Nova rota para o painel de gestão da prefeitura */}
-
-    </>
+    </div>
   );
 }
 
