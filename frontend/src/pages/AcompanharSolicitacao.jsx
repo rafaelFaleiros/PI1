@@ -1,9 +1,11 @@
+
 import { useState } from "react";
 
 function AcompanharSolicitacao({
   mudarPagina,
   altoContraste,
   alternarContraste,
+  setStatusRemoto,
 }) {
   const [cpf, setCpf] = useState("");
 
@@ -28,23 +30,32 @@ function AcompanharSolicitacao({
       };
 
   async function buscar() {
-    if (!cpf) {
+    const cpfLimpo = cpf.replace(/\D/g, "");
+
+    if (!cpfLimpo) {
       alert("Digite o CPF!");
       return;
     }
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/solicitacoes/buscar/" + cpf
+        `http://localhost:3001/api/solicitacoes/buscar/${cpfLimpo}`
       );
 
       if (response.ok) {
         const dados = await response.json();
 
-        if (dados.status === "Em análise") {
-          mudarPagina("statusEmAnalise");
-        } else if (dados.status === "Concluído") {
-          mudarPagina("statusConcluido");
+        if (setStatusRemoto) {
+          setStatusRemoto(dados.status || "");
+        }
+
+        if (
+          dados.status === "Em análise" ||
+          dados.status === "Concluído"
+        ) {
+          mudarPagina("status");
+        } else {
+          mudarPagina("naoEncontrado");
         }
       } else {
         mudarPagina("naoEncontrado");
@@ -149,7 +160,7 @@ function AcompanharSolicitacao({
               onChange={(e) => setCpf(e.target.value)}
               style={{
                 ...styles.input,
-                backgroundColor: cores.campo || cores.cartao,
+                backgroundColor: cores.cartao,
                 color: cores.texto,
                 borderColor: cores.borda,
               }}

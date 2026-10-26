@@ -1,3 +1,4 @@
+
 version: "3.8"
 
 services:
@@ -19,6 +20,7 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
+    working_dir: /usr/src/app
     depends_on:
       - db
     command: sh -c "npx sequelize-cli db:migrate && node server.js"

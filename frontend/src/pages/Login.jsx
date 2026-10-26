@@ -1,3 +1,4 @@
+
 function Login({ mudarPagina, altoContraste, alternarContraste }) {
   const cores = altoContraste
     ? {
@@ -6,6 +7,7 @@ function Login({ mudarPagina, altoContraste, alternarContraste }) {
         texto: "#FFFFFF",
         destaque: "#FFFF00",
         textoDestaque: "#000000",
+        borda: "#FFFF00",
       }
     : {
         fundo: "#F5F7FA",
@@ -13,6 +15,7 @@ function Login({ mudarPagina, altoContraste, alternarContraste }) {
         texto: "#374151",
         destaque: "#0F4C5C",
         textoDestaque: "#FFFFFF",
+        borda: "#D1D5DB",
       };
 
   return (
@@ -55,7 +58,7 @@ function Login({ mudarPagina, altoContraste, alternarContraste }) {
           style={{
             ...styles.card,
             backgroundColor: cores.cartao,
-            border: altoContraste ? "2px solid #FFFF00" : "none",
+            border: `2px solid ${cores.borda}`,
           }}
           aria-labelledby="titulo-login"
         >
@@ -66,7 +69,7 @@ function Login({ mudarPagina, altoContraste, alternarContraste }) {
               color: altoContraste ? cores.destaque : "#1F2937",
             }}
           >
-            Autenticação GOV.br
+            Acesso ao Sistema
           </h2>
 
           <p
@@ -75,8 +78,7 @@ function Login({ mudarPagina, altoContraste, alternarContraste }) {
               color: cores.texto,
             }}
           >
-            Para acessar o sistema, é necessário realizar a autenticação
-            segura através da conta GOV.br.
+            Escolha como deseja acessar o Sistema Digital de Requerimento.
           </p>
 
           <button
@@ -88,9 +90,30 @@ function Login({ mudarPagina, altoContraste, alternarContraste }) {
               border: altoContraste ? "2px solid #FFFF00" : "none",
             }}
             onClick={() => mudarPagina("home")}
-            aria-label="Entrar no sistema utilizando a conta GOV.br"
           >
-            Entrar com GOV.br
+            Entrar como Cidadão (GOV.br)
+          </button>
+
+          <p
+            style={{
+              ...styles.separator,
+              color: cores.texto,
+            }}
+          >
+            — ou —
+          </p>
+
+          <button
+            type="button"
+            style={{
+              ...styles.button,
+              backgroundColor: altoContraste ? "#000000" : "#4B5563",
+              color: "#FFFFFF",
+              border: altoContraste ? "2px solid #FFFF00" : "none",
+            }}
+            onClick={() => mudarPagina("dashboard")}
+          >
+            Painel Administrativo (Operador)
           </button>
         </section>
       </main>
@@ -103,6 +126,7 @@ const styles = {
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
+    fontFamily: "Arial, sans-serif",
   },
 
   header: {
@@ -158,6 +182,11 @@ const styles = {
     marginBottom: "24px",
     fontSize: "16px",
     lineHeight: "1.5",
+  },
+
+  separator: {
+    margin: "18px 0",
+    fontSize: "16px",
   },
 
   button: {

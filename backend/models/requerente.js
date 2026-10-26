@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Requerente.init({
+    id: {
+      type: DataTypes.STRING, // Deve ser igual ao id_requerente da solicitacao
+      primaryKey: true
+    },
     nome: DataTypes.STRING,
     cpf: DataTypes.STRING,
     rg: DataTypes.STRING,

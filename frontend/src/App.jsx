@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import Login from "./pages/Login";
 import NovoRequerimento from "./pages/NovoRequerimento";
@@ -6,9 +7,11 @@ import AcompanharSolicitacao from "./pages/AcompanharSolicitacao";
 import SolicitacaoEnviada from "./pages/SolicitacaoEnviada";
 import StatusSolicitacao from "./pages/StatusSolicitacao";
 import NaoEncontrado from "./pages/NaoEncontrado";
+import DashboardOperador from "./pages/DashboardOperador";
 
 function App() {
   const [pagina, setPagina] = useState("login");
+  const [statusAtual, setStatusAtual] = useState("");
 
   const [altoContraste, setAltoContraste] = useState(() => {
     return localStorage.getItem("altoContraste") === "true";
@@ -17,9 +20,7 @@ function App() {
   function alternarContraste() {
     setAltoContraste((atual) => {
       const novoValor = !atual;
-
       localStorage.setItem("altoContraste", String(novoValor));
-
       return novoValor;
     });
   }
@@ -45,6 +46,13 @@ function App() {
         />
       )}
 
+      {pagina === "dashboard" && (
+        <DashboardOperador
+          mudarPagina={setPagina}
+          {...propriedadesAcessibilidade}
+        />
+      )}
+
       {pagina === "requerimento" && (
         <NovoRequerimento
           mudarPagina={setPagina}
@@ -55,6 +63,7 @@ function App() {
       {pagina === "acompanhar" && (
         <AcompanharSolicitacao
           mudarPagina={setPagina}
+          setStatusRemoto={setStatusAtual}
           {...propriedadesAcessibilidade}
         />
       )}
@@ -66,17 +75,9 @@ function App() {
         />
       )}
 
-      {pagina === "statusEmAnalise" && (
+      {pagina === "status" && (
         <StatusSolicitacao
-          status="Em análise"
-          mudarPagina={setPagina}
-          {...propriedadesAcessibilidade}
-        />
-      )}
-
-      {pagina === "statusConcluido" && (
-        <StatusSolicitacao
-          status="Concluído"
+          status={statusAtual}
           mudarPagina={setPagina}
           {...propriedadesAcessibilidade}
         />
